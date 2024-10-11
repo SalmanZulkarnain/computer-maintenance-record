@@ -1,6 +1,6 @@
 <?php 
 
-$db = new SQLite3('tasks.sqlite');
+$db = new SQLite3('computer_services_db.sqlite');
 
 if(!$db) {
     echo $db->lastErrorMsg();
