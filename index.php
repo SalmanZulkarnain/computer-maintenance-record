@@ -66,7 +66,7 @@ if (isset($_GET['edit'])) {
                             <input type="date" name="tanggal" placeholder="Masukkan tanggal maintenance">
                         </div>
                         <div class="input-group">
-                            <input type="submit" name="submit" value="Tambah">
+                            <input type="submit" name="submit" value="Kirim">
                         </div>
                     </form>
                     <label class="modal-close" for="modal-tambah">Tutup</label>
