@@ -1,13 +1,16 @@
 <?php
-
 require 'db.php';
 require 'functions.php';
 
 $gagal = '';
+$maintenance_edit = null;
 
 $maintenances = viewMaintenance();
-
 deleteMaintenance();
+
+if (isset($_GET['edit'])) {
+    $maintenance_edit = ambilMaintenance();
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
@@ -20,11 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 break;
         }
     }
-}
-
-$maintenance_edit = null;
-if (isset($_GET['edit'])) {
-    $maintenance_edit = ambilMaintenance();
 }
 ?>
 
@@ -86,7 +84,6 @@ if (isset($_GET['edit'])) {
                         <?php if ($maintenance_edit): ?>
                             <input type="hidden" name="id" value="<?php echo $maintenance_edit['id']; ?>">
                         <?php endif; ?>
-
                         <div class="input-group">
                             <input type="text" name="item" value="<?php echo $maintenance_edit['item'] ?>" placeholder="Masukkan item yang dimaintenance">
                         </div>

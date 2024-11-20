@@ -100,8 +100,6 @@ input[type="submit"] {
   font-family: "Poppins", sans-serif;
 }
 
-
-
 .modal-btn {
   background-color: #00adb5;
   color: #eeeeee;
@@ -134,11 +132,10 @@ input[type="submit"] {
   top: 20%;
   left: 40%;
   justify-content: center;
-  
 }
 .modal-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .modal-close {
@@ -151,18 +148,18 @@ input[type="submit"] {
 }
 
 .modal-tambah {
-    display: none;
-  }
+  display: none;
+}
 
 .modal-tambah:checked + .modal-btn + .modal {
   display: block;
 }
 .modal-update {
-    display: none;
-  }
+  display: none;
+}
 
-  .modal-update:checked ~ .modal {
-    display: block;
+.modal-update:checked ~ .modal {
+  display: block;
 }
 
 @media only screen and (max-width: 600px) {

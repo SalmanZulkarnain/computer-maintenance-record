@@ -1,16 +1,15 @@
 <?php 
-
 require 'db.php';
 
 function addMaintenance() {
     global $db;
     
     $gagal = '';
-    if(isset($_POST['submit'])) {
+    if (isset($_POST['submit'])) {
         $item = $_POST['item'];
         $deskripsi = $_POST['deskripsi'];
-        $biaya = $_POST['biaya'];
         $tanggal = $_POST['tanggal'];
+        $biaya = $_POST['biaya'];
 
         $formattedDate = DateTime::createFromFormat('d/m/Y', $tanggal);
 
@@ -23,8 +22,18 @@ function addMaintenance() {
         if (empty($judul) && empty($deskripsi) && empty($tanggal) && empty($biaya)) {
             $gagal = "Silakan isi form maintenance.";
         } else {
-            $db->query("INSERT INTO computer_services (item, deskripsi, tanggal, biaya) VALUES ('$item', '$deskripsi', '$tanggal', '$biaya')");
-            header('Location: index.php');
+            $stmt = $db->prepare("INSERT INTO computer_services (item, deskripsi, tanggal, biaya) VALUES (:item, :deskripsi, :tanggal, :biaya)");
+            $stmt->bindParam(':item', $item, SQLITE3_TEXT);
+            $stmt->bindParam(':deskripsi', $deskripsi, SQLITE3_TEXT);
+            $stmt->bindParam(':tanggal', $tanggal, SQLITE3_TEXT);
+            $stmt->bindParam(':biaya', $biaya, SQLITE3_FLOAT);
+
+            if ($stmt->execute()) {
+                header('Location: index.php');
+                exit;
+            } else {
+                $gagal = "Gagal menyimpan data ke database";
+            }
             exit;
         }
     }
@@ -50,16 +59,18 @@ function ambilMaintenance() {
         return null; 
     }
 
-    $id = $_GET['edit'];
-    $ambil = $db->query("SELECT * FROM computer_services WHERE id = '$id'");
+    $id = $_GET['edit'];    
+    $stmt = $db->prepare("SELECT * FROM computer_services WHERE id = :id");
+    $stmt->bindParam(':id', $id, SQLITE3_INTEGER);
+    $result = $stmt->execute();
     
-    return $ambil->fetchArray(SQLITE3_ASSOC);
+    return $result->fetchArray(SQLITE3_ASSOC);
 }   
 
 function updateMaintenance() {
     global $db;
 
-    if(isset($_POST['id'])) {
+    if (isset($_POST['id'])) {
         $id = $_POST['id'];
         $item = $_POST['item'];
         $deskripsi = $_POST['deskripsi'];
@@ -73,8 +84,17 @@ function updateMaintenance() {
         } 
         
         if (!empty($item) && !empty($deskripsi) && !empty($tanggal) && !empty($biaya)) {
-            $db->query("UPDATE computer_services SET item = '$item', deskripsi = '$deskripsi', tanggal = '$tanggal', biaya = '$biaya' WHERE id = '$id'");
-            header('Location: index.php');
+            $stmt = $db->prepare("UPDATE computer_services SET item = :item, deskripsi = :deskripsi, tanggal = :tanggal, biaya = :biaya WHERE id = :id");
+            $stmt->bindParam(':item', $item, SQLITE3_TEXT);
+            $stmt->bindParam(':deskripsi', $deskripsi, SQLITE3_TEXT);
+            $stmt->bindParam(':tanggal', $tanggal, SQLITE3_TEXT);
+            $stmt->bindParam(':biaya', $biaya, SQLITE3_FLOAT);
+            $stmt->bindParam(':id', $id, SQLITE3_INTEGER);
+
+            if ($stmt->execute()) {
+                header('Location: index.php');
+                exit;
+            }
         }
     }
 }
@@ -82,10 +102,14 @@ function updateMaintenance() {
 function deleteMaintenance() {
     global $db;
 
-    if(isset($_GET['delete'])) {
+    if (isset($_GET['delete'])) {
         $id = $_GET['delete'];
-        $db->query("DELETE FROM computer_services WHERE id = '$id'");
-        header('Location: index.php');
-        exit;
+        $stmt = $db->prepare("DELETE FROM computer_services WHERE id = :id");
+        $stmt->bindParam(':id', $id, SQLITE3_INTEGER);
+        
+        if ($stmt->execute()) {
+            header('Location: index.php');
+            exit;
+        }
     }
 }
